@@ -44,18 +44,34 @@ class _HomePageState extends State<HomePage> {
 
   //! recibo una banda band de tipo Band!
   //! ya no recibo un int index!!
-  ListTile _bandTile(Band band) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(band.name.substring(0, 2)),
-        backgroundColor: Colors.blue[100],
+  Widget _bandTile(Band band) {
+    return Dismissible(
+      key: Key(band.id),
+      direction: DismissDirection.startToEnd,
+      onDismissed: (direction) {
+        print('direction: $direction');
+        print('id: ${band.id}');
+        // TODO: llamar el borrado en el server
+      },
+      background: Container(
+        padding: const EdgeInsets.only(left: 8.0),
+        color: Colors.red,
+        child: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Delete Band', style: TextStyle(color: Colors.white)),
+        ),
       ),
-      title: Text(band.name),
-      trailing: Text(
-        '${band.votes}',
-        style: const TextStyle(fontSize: 20),
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Text(band.name.substring(0, 2)),
+          backgroundColor: Colors.blue[100],
+        ),
+        title: Text(band.name),
+        trailing: Text('${band.votes}', style: const TextStyle(fontSize: 20)),
+        onTap: () {
+          print(band.name);
+        },
       ),
-      onTap: () {},
     );
   }
 
