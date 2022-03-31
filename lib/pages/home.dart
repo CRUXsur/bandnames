@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:band_names/models/band.dart';
@@ -32,10 +35,10 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (context, i) => _bandTile(bands[i]),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        elevation: 1,
-        onPressed: () {},
-      ),
+          child: const Icon(Icons.add),
+          elevation: 1,
+          onPressed: addNewBand //* mando la referencia del metodo
+          ),
     );
   }
 
@@ -52,9 +55,70 @@ class _HomePageState extends State<HomePage> {
         '${band.votes}',
         style: const TextStyle(fontSize: 20),
       ),
-      onTap: () {
-        print(band.name);
+      onTap: () {},
+    );
+  }
+
+  //* Metodo
+  addNewBand() {
+    //para obtener el texto que ingresa el usuario
+    final textController = TextEditingController();
+
+    if (!Platform.isAndroid) {
+      // Android
+      return showDialog(
+        context: context,
+        //construye el mensaje que va a aparecer
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('New band name:'),
+            content: TextField(
+              controller: textController,
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                  child: const Text('Add'),
+                  elevation: 5,
+                  textColor: Colors.blue,
+                  onPressed: () => addBandToList(textController.text))
+            ],
+          );
+        },
+      );
+    }
+
+    showCupertinoDialog(
+      context: context,
+      builder: (_) {
+        return CupertinoAlertDialog(
+          title: const Text('New band name:'),
+          content: CupertinoTextField(
+            controller: textController,
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+                isDefaultAction: true,
+                child: const Text('Add'),
+                onPressed: () => addBandToList(textController.text)),
+            CupertinoDialogAction(
+                isDestructiveAction: true,
+                child: const Text('Dismiss'),
+                onPressed: () => Navigator.pop(context))
+          ],
+        );
       },
     );
+  }
+
+  void addBandToList(String name) {
+    //print(name);
+
+    if (name.length > 1) {
+      // Podemos agregar
+      bands.add(Band(id: DateTime.now().toString(), name: name, votes: 0));
+      setState(() {});
+    }
+    // cerramos el dialogo
+    Navigator.pop(context);
   }
 }
