@@ -33,6 +33,15 @@ class SocketService with ChangeNotifier {
       _serverStatus = ServerStatus.Offline;
       notifyListeners();
     });
+
+    //* otro evento personalizado, recibimos un Mapa
+    socket.on('nuevo-mensaje', (payload) {
+      print('nuevo-mensaje:');
+      print('nombre:' + payload['nombre']);
+      print('mensaje:' + payload['mensaje']);
+      //print('mensaje:' + payload['mensaje2']);
+      print(payload.containsKey('mensaje2') ? payload['mensaje2'] : 'no hay');
+    });
   }
 }
 
