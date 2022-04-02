@@ -16,11 +16,35 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Band> bands = [
-    Band(id: '1', name: 'Metalica', votes: 5),
+/*     Band(id: '1', name: 'Metalica', votes: 5),
     Band(id: '2', name: 'Queen', votes: 1),
     Band(id: '3', name: 'Heroes del Silencio', votes: 2),
-    Band(id: '4', name: 'Bon Jovi', votes: 5),
+    Band(id: '4', name: 'Bon Jovi', votes: 5), */
   ];
+
+  //* con esto escuchamos evento del backend, socket server
+  @override
+  void initState() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket.on('active-bands', (payload) {
+      //print(payload); //! recibo un listado y dentro una coleccion de mapas
+      //* lo mapeo y luego ya podriamos teenr los metodos y propiedades
+      //* que nosotros necesitamos, porque payload que recibimos es dynamic
+      bands = (payload as List).map((band) => Band.fromMap(band)).toList();
+
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  //* cuando dejo de escuchar..... limpio todo!..limpieza!
+  @override
+  void dispose() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket.off('active-bands'); //dejo de escuchar el evento
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final socketService = Provider.of<SocketService>(context);
