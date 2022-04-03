@@ -82,6 +82,8 @@ class _HomePageState extends State<HomePage> {
   //! recibo una banda band de tipo Band!
   //! ya no recibo un int index!!
   Widget _bandTile(Band band) {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+
     return Dismissible(
       key: Key(band.id),
       direction: DismissDirection.startToEnd,
@@ -106,7 +108,8 @@ class _HomePageState extends State<HomePage> {
         title: Text(band.name),
         trailing: Text('${band.votes}', style: const TextStyle(fontSize: 20)),
         onTap: () {
-          print(band.name);
+          //print(band.name); print(name.id);
+          socketService.socket.emit('vote-band', {'id': band.id});
         },
       ),
     );
