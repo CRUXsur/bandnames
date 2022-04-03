@@ -26,15 +26,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     final socketService = Provider.of<SocketService>(context, listen: false);
-    socketService.socket.on('active-bands', (payload) {
-      //print(payload); //! recibo un listado y dentro una coleccion de mapas
-      //* lo mapeo y luego ya podriamos teenr los metodos y propiedades
-      //* que nosotros necesitamos, porque payload que recibimos es dynamic
-      bands = (payload as List).map((band) => Band.fromMap(band)).toList();
-
-      setState(() {});
-    });
+    socketService.socket.on('active-bands', _handleActiveBands);
     super.initState();
+  }
+
+  _handleActiveBands(dynamic payload) {
+    //print(payload); //! recibo un listado y dentro una coleccion de mapas
+    //* lo mapeo y luego ya podriamos teenr los metodos y propiedades
+    //* que nosotros necesitamos, porque payload que recibimos es dynamic
+    bands = (payload as List).map((band) => Band.fromMap(band)).toList();
+    setState(() {});
   }
 
   //* cuando dejo de escuchar..... limpio todo!..limpieza!
@@ -128,7 +129,7 @@ class _HomePageState extends State<HomePage> {
       return showDialog(
         context: context,
         //construye el mensaje que va a aparecer
-        builder: (context) {
+        builder: (_) {
           return AlertDialog(
             title: const Text('New band name:'),
             content: TextField(
